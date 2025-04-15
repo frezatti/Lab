@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Person Form</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+            margin: 10px 0;
+        }
+        input[type="text"], input[type="email"], input[type="number"], select, textarea {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 250px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        #btnExcluir {
+            background-color: #f44336;
+        }
+        #btnExcluir:hover {
+            background-color: #d32f2f;
+        }
+        #btnCarregar {
+            background-color: #2196F3;
+        }
+        #btnCarregar:hover {
+            background-color: #0b7dda;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <h2>Person Registration Form</h2>
+    <p><a href="../index.html">Back to Home</a></p>
+    <hr>
+    <form action="" method="post">
+        <label for="nome">Name:</label>
+        <input type="text" name="nome" id="nome" required>
+        <br>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+        <br>
+        <label for="idade">Age:</label>
+        <input type="number" name="idade" id="idade" required>
+        <br>
+        <label for="sexo">Gender:</label>
+        <input type="radio" name="sexo" id="sexoM" value="M" required> Male
+        <input type="radio" name="sexo" id="sexoF" value="F" required> Female
+        <br>
+        <label for="cidade">City:</label>
+        <select name="cidade" id="cidade" required>
+            <option value="1">New York</option>
+            <option value="2">Los Angeles</option>
+            <option value="3">Chicago</option>
+            <option value="4">Houston</option>
+            <option value="5">Phoenix</option>
+        </select>
+        <br>
+        <br>
+        <label for="interesses">Interests:</label>
+        <input type="checkbox" name="interesses[]" id="interesse1" value="sports"> Sports
+        <input type="checkbox" name="interesses[]" id="interesse2" value="music"> Music
+        <input type="checkbox" name="interesses[]" id="interesse3" value="movies"> Movies
+        <input type="checkbox" name="interesses[]" id="interesse4" value="technology"> Technology
+        <br>
+        <br>
+        <label for="mensagem">Personal notes:</label>
+        <br>
+        <textarea name="mensagem" id="mensagem" cols="50" rows="5" required></textarea>
+        <br>
+        <br>
+        <input id="btnSalvar" type="submit" value="Save">
+        <input id="btnExcluir" type="submit" value="Delete">
+        <input id="btnCarregar" type="submit" value="Load Data">
+        <hr>
+        <table>
+            <thead>
+                <tr>
+                    <th width="5%">ID</th>
+                    <th width="15%">Name</th>
+                    <th width="20%">Email</th>
+                    <th width="10%">Age</th>
+                    <th width="10%">Gender</th>
+                    <th width="15%">City</th>
+                    <th width="25%">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tabela">
+                <!-- Table data will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+    </form>
+    
+    <script src="./lab03.js"></script>
+</body>
+</html>
