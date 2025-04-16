@@ -1,6 +1,6 @@
 import { Filme } from "../model/filme.js";
 
-class FilmeController {
+export class FilmeController {
     constructor() {
         this.listaFilmes = [];
         this.idEmEdicao = null;

@@ -2,7 +2,7 @@ import { Sessao } from "../model/sessao.js";
 import { Filme } from "../model/filme.js";
 import { Sala } from "../model/sala.js";
 
-class SessaoController {
+export class SessaoController {
     constructor() {
         this.listaSessoes = [];
         this.listaFilmes = [];

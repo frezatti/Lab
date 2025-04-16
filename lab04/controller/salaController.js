@@ -1,6 +1,6 @@
 import { Sala } from "../model/sala.js";
 
-class SalaController {
+export class SalaController {
     constructor() {
         this.listaSalas = [];
         this.idEmEdicao = null;
