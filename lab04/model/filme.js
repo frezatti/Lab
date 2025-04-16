@@ -1,7 +1,8 @@
 export class Filme {
-    constructor(id, titulo, genero, classificacao, duracao, dataEstreia) {
+    constructor(id, titulo, descricao, genero, classificacao, duracao, dataEstreia) {
         this.id = id;
         this.titulo = titulo;
+        this.descricao = descricao;
         this.genero = genero;
         this.classificacao = classificacao;
         this.duracao = duracao;
@@ -15,6 +16,10 @@ export class Filme {
 
     getTitulo() {
         return this.titulo;
+    }
+
+    getDescricao() {
+        return this.descricao;
     }
 
     getGenero() {
@@ -33,12 +38,18 @@ export class Filme {
         return this.dataEstreia;
     }
 
+    //Setters
+
     setId(id) {
         this.id = id;
     }
 
     setTitulo(titulo) {
         this.titulo = titulo;
+    }
+
+    setDescricao(descricao) {
+        this.descricao = descricao;
     }
 
     setGenero(genero) {
@@ -61,6 +72,7 @@ export class Filme {
         return {
             id: this.id,
             titulo: this.titulo,
+            descricao: this.descricao,
             genero: this.genero,
             classificacao: this.classificacao,
             duracao: this.duracao,
@@ -82,6 +94,7 @@ export class Filme {
         return new Filme(
             json.id,
             json.titulo,
+            json.descricao,
             json.genero,
             json.classificacao,
             json.duracao,

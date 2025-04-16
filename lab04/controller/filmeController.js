@@ -5,7 +5,7 @@ export class FilmeController {
         this.listaFilmes = [];
         this.idEmEdicao = null;
         this.idParaExcluir = null;
-        this.LOCAL_STORAGE_KEY = "cinema_filmes";
+        this.LOCAL_STORAGE_KEY = "filmes";
 
         this.salvar = this.salvar.bind(this);
         this.excluir = this.excluir.bind(this);
@@ -100,9 +100,10 @@ export class FilmeController {
         return new Filme(
             this.idEmEdicao || Date.now(),
             document.getElementById("titulo").value.trim(),
+            document.getElementById("descricao").value.trim(),
             document.getElementById("genero").value.trim(),
-            parseInt(document.getElementById("classificacao").value),
-            document.getElementById("duracao").value.trim(),
+            document.getElementById("classificacao").value,
+            parseInt(document.getElementById("duracao").value),
             document.getElementById("dataEstreia").value
         );
     }
@@ -171,6 +172,7 @@ export class FilmeController {
         this.salvarNoLocalStorage();
         this.atualizarTabela(this.listaFilmes);
         this.idParaExcluir = null;
+        this.fecharModal("idModalExcluirFilme")
     }
 
     abrirModalCadastro() {
@@ -190,6 +192,7 @@ export class FilmeController {
 
         document.getElementById("titulo").value = filme.titulo;
         document.getElementById("genero").value = filme.genero;
+        document.getElementById("descricao").value = filme.descricao || "";
         document.getElementById("classificacao").value = filme.classificacao;
         document.getElementById("duracao").value = filme.duracao;
         document.getElementById("dataEstreia").value = filme.dataEstreia;

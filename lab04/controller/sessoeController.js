@@ -48,7 +48,7 @@ export class SessaoController {
         });
 
         const btnBuscar = document.querySelector(".btn-primary[type='button']");
-        const inputBusca = document.querySelector("input[placeholder='Buscar sessÃ£o']");
+        const inputBusca = document.querySelector("input[placeholder='Buscar sessão']");
 
         if (btnBuscar && inputBusca) {
             btnBuscar.addEventListener("click", () => this.buscarSessoes(inputBusca.value));
@@ -87,7 +87,7 @@ export class SessaoController {
             }
         }
 
-        // Carregar sessÃµes
+        // Carregar sessões
         const sessoesSalvas = localStorage.getItem(this.LOCAL_STORAGE_KEY);
         if (sessoesSalvas) {
             try {
@@ -95,7 +95,7 @@ export class SessaoController {
                 this.listaSessoes = sessoesJSON.map(json => Sessao.fromJSON(json));
                 this.atualizarTabela(this.listaSessoes);
             } catch (error) {
-                console.error("Erro ao carregar sessÃµes do localStorage:", error);
+                console.error("Erro ao carregar sessões do localStorage:", error);
                 this.listaSessoes = [];
             }
         }
@@ -198,14 +198,14 @@ export class SessaoController {
 
         if (sessoes.length === 0) {
             const tr = document.createElement("tr");
-            tr.innerHTML = `<td colspan="7" class="text-center">Nenhuma sessÃ£o cadastrada</td>`;
+            tr.innerHTML = `<td colspan="7" class="text-center">Nenhuma sessão cadastrada</td>`;
             tbody.appendChild(tr);
             return;
         }
 
         sessoes.forEach(sessao => {
-            const filme = this.listaFilmes.find(f => f.id == sessao.filmeId) || { titulo: 'Filme nÃ£o encontrado' };
-            const sala = this.listaSalas.find(s => s.id == sessao.salaId) || { nome: 'Sala nÃ£o encontrada' };
+            const filme = this.listaFilmes.find(f => f.id == sessao.filmeId) || { titulo: 'Filme não encontrado' };
+            const sala = this.listaSalas.find(s => s.id == sessao.salaId) || { nome: 'Sala não encontrada' };
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
@@ -216,10 +216,10 @@ export class SessaoController {
                 <td>R$ ${sessao.preco.toFixed(2)}</td>
                 <td>${sessao.idioma} - ${sessao.formato}</td>
                 <td>
-                  <button class="btn btn-warning btn-sm btn-editar" data-id="${sessao.id}" title="Editar sessÃ£o">
+                  <button class="btn btn-warning btn-sm btn-editar" data-id="${sessao.id}" title="Editar sessão">
                     <i class="bi bi-pencil-square"></i>
                   </button>
-                  <button class="btn btn-danger btn-sm ms-2 btn-excluir" data-id="${sessao.id}" title="Excluir sessÃ£o">
+                  <button class="btn btn-danger btn-sm ms-2 btn-excluir" data-id="${sessao.id}" title="Excluir sessão">
                     <i class="bi bi-trash-fill"></i>
                   </button>
                 </td>
@@ -248,7 +248,7 @@ export class SessaoController {
 
         this.idEmEdicao = null;
 
-        document.getElementById("idModalSessaoTitulo").textContent = "Cadastrar Nova SessÃ£o";
+        document.getElementById("idModalSessaoTitulo").textContent = "Cadastrar Nova Sessão";
 
         this.abrirModal("idModalSessao");
     }
@@ -268,7 +268,7 @@ export class SessaoController {
         document.getElementById("idioma").value = sessao.idioma;
         document.getElementById("formato").value = sessao.formato;
 
-        document.getElementById("idModalSessaoTitulo").textContent = "Editar SessÃ£o";
+        document.getElementById("idModalSessaoTitulo").textContent = "Editar Sessão";
 
         this.abrirModal("idModalSessao");
     }
@@ -281,12 +281,12 @@ export class SessaoController {
         const sessao = this.listaSessoes.find(s => s.id === id);
 
         if (sessao) {
-            const filme = this.listaFilmes.find(f => f.id == sessao.filmeId) || { titulo: 'Filme nÃ£o encontrado' };
-            const sala = this.listaSalas.find(s => s.id == sessao.salaId) || { nome: 'Sala nÃ£o encontrada' };
+            const filme = this.listaFilmes.find(f => f.id == sessao.filmeId) || { titulo: 'Filme não encontrado' };
+            const sala = this.listaSalas.find(s => s.id == sessao.salaId) || { nome: 'Sala não encontrada' };
 
             const msgConfirmacao = document.querySelector("#modalExcluirSessao .modal-body h5");
             if (msgConfirmacao) {
-                msgConfirmacao.textContent = `Deseja realmente excluir a sessÃ£o do filme "${filme.titulo}" na sala "${sala.nome}"?`;
+                msgConfirmacao.textContent = `Deseja realmente excluir a sessão do filme "${filme.titulo}" na sala "${sala.nome}"?`;
             }
         }
 
@@ -336,3 +336,8 @@ export class SessaoController {
         return `${dia}/${mes}/${ano} ${horas}:${minutos}`;
     }
 }
+
+// Initialize the controller when the page loads
+document.addEventListener("DOMContentLoaded", () => {
+    window.sessaoController = new SessaoController();
+});

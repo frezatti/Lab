@@ -50,16 +50,10 @@ export class Sala {
     }
 
     toString() {
-        return `Sala: ${this.nome} (${this.tipo}) - Capacidade: ${this.capacidade} lugares`;
+        return `Sala: ${this.nome} (Tipo: ${this.tipo}, Capacidade: ${this.capacidade} lugares)`;
     }
 
-    // Factory method
     static fromJSON(json) {
-        return new Sala(
-            json.id,
-            json.nome,
-            json.capacidade,
-            json.tipo
-        );
+        return new Sala(json.id, json.nome, json.capacidade, json.tipo);
     }
 }

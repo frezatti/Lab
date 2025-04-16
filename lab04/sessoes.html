@@ -54,7 +54,6 @@
           </tr>
         </thead>
         <tbody id="tabelaSessoes">
-          <!-- Dados serão carregados via JavaScript -->
         </tbody>
       </table>
     </div>
@@ -73,14 +72,12 @@
                 <label for="filme" class="form-label">Filme</label>
                 <select class="form-select" id="filme" required>
                   <option value="">Selecione um filme</option>
-                  <!-- Opções serão carregadas via JavaScript -->
                 </select>
               </div>
               <div class="mb-3">
                 <label for="sala" class="form-label">Sala</label>
                 <select class="form-select" id="sala" required>
                   <option value="">Selecione uma sala</option>
-                  <!-- Opções serão carregadas via JavaScript -->
                 </select>
               </div>
               <div class="mb-3">
@@ -143,12 +140,6 @@
   </main>
   
   <script src="./js/bootstrap.bundle.min.js"></script>
-  <script type="module">
-    import { SessaoController } from "./controller/sessoeController.js";
-    
-    document.addEventListener("DOMContentLoaded", () => {
-      const controller = new SessaoController();
-    });
-  </script>
+  <script type="module" src="./controller/sessoeController.js"></script>
 </body>
 </html>
