@@ -7,6 +7,7 @@ export class Filme {
         this.classificacao = classificacao;
         this.duracao = duracao;
         this.dataEstreia = dataEstreia;
+        this.imagem = imagem || "./img/default-poster.jpg";
     }
 
     // Getters
@@ -36,6 +37,9 @@ export class Filme {
 
     getDataEstreia() {
         return this.dataEstreia;
+    }
+    getImagem() {
+        return this.imagem;
     }
 
     //Setters
@@ -68,6 +72,10 @@ export class Filme {
         this.dataEstreia = dataEstreia;
     }
 
+    setImagem(imagem) {
+        this.imagem = imagem;
+    }
+
     toJSON() {
         return {
             id: this.id,
@@ -76,10 +84,11 @@ export class Filme {
             genero: this.genero,
             classificacao: this.classificacao,
             duracao: this.duracao,
-            dataEstreia: this.dataEstreia
+            dataEstreia: this.dataEstreia,
+            imagem: this.imagem
         };
-    }
 
+    }
     toString() {
         return `Filme: ${this.titulo} (${this.genero}) - Classificação: ${this.classificacao} anos - Duração: ${this.duracao}h - Estreia: ${this.formatarData(this.dataEstreia)}`;
     }
@@ -98,7 +107,8 @@ export class Filme {
             json.genero,
             json.classificacao,
             json.duracao,
-            json.dataEstreia
+            json.dataEstreia,
+            json.imagem
         );
     }
 }

@@ -78,8 +78,25 @@ export class FilmeController {
             return;
         }
 
-        const filme = this.criarFilmeDoFormulario();
+        const fileInput = document.getElementById("imagem");
+        const file = fileInput.files[0];
 
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64Image = reader.result; // this is the Base64 string
+
+                const filme = this.criarFilmeDoFormulario(base64Image);
+                this.salvarFilme(filme);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // No new image selected, keep existing or default
+            const filme = this.criarFilmeDoFormulario();
+            this.salvarFilme(filme);
+        }
+    }
+    salvarFilme(filme) {
         if (this.idEmEdicao) {
             const index = this.listaFilmes.findIndex(f => f.id === this.idEmEdicao);
             if (index !== -1) {
@@ -92,11 +109,10 @@ export class FilmeController {
         this.salvarNoLocalStorage();
         this.atualizarTabela(this.listaFilmes);
         this.limparFormulario();
-
         this.fecharModal("idModalFilme");
     }
 
-    criarFilmeDoFormulario() {
+    criarFilmeDoFormulario(base64Image) {
         return new Filme(
             this.idEmEdicao || Date.now(),
             document.getElementById("titulo").value.trim(),
@@ -104,7 +120,8 @@ export class FilmeController {
             document.getElementById("genero").value.trim(),
             document.getElementById("classificacao").value,
             parseInt(document.getElementById("duracao").value),
-            document.getElementById("dataEstreia").value
+            document.getElementById("dataEstreia").value,
+            base64Image || this.imagemAtual || "../img/placeholder-image.jpg"
         );
     }
 
@@ -172,7 +189,7 @@ export class FilmeController {
         this.salvarNoLocalStorage();
         this.atualizarTabela(this.listaFilmes);
         this.idParaExcluir = null;
-        this.fecharModal("idModalExcluirFilme")
+        this.fecharModal("modalExcluirFilme")
     }
 
     abrirModalCadastro() {
@@ -189,13 +206,17 @@ export class FilmeController {
         if (!filme) return;
 
         this.idEmEdicao = filme.id;
+        this.imagemAtual = filme.imagem; // store current image base64 or URL
 
         document.getElementById("titulo").value = filme.titulo;
-        document.getElementById("genero").value = filme.genero;
         document.getElementById("descricao").value = filme.descricao || "";
+        document.getElementById("genero").value = filme.genero;
         document.getElementById("classificacao").value = filme.classificacao;
         document.getElementById("duracao").value = filme.duracao;
         document.getElementById("dataEstreia").value = filme.dataEstreia;
+
+        // Clear file input so user can upload new image if desired
+        document.getElementById("imagem").value = "";
 
         document.getElementById("idModalFilmeTitulo").textContent = "Editar Filme";
 
