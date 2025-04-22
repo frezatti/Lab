@@ -1,165 +1,187 @@
 import { Filme } from "../model/filme.js";
 
 export class FilmeController {
-    constructor() {
-        this.listaFilmes = [];
-        this.idEmEdicao = null;
-        this.idParaExcluir = null;
-        this.LOCAL_STORAGE_KEY = "filmes";
+	constructor() {
+		this.listaFilmes = [];
+		this.idEmEdicao = null;
+		this.idParaExcluir = null;
+		this.imagemAtual = null; // Initialize current image
+		this.LOCAL_STORAGE_KEY = "filmes";
 
-        this.salvar = this.salvar.bind(this);
-        this.excluir = this.excluir.bind(this);
-        this.abrirModalCadastro = this.abrirModalCadastro.bind(this);
-        this.abrirModalEdicao = this.abrirModalEdicao.bind(this);
-        this.abrirModalExcluir = this.abrirModalExcluir.bind(this);
-        this.limparFormulario = this.limparFormulario.bind(this);
-        this.fecharModal = this.fecharModal.bind(this);
+		this.salvar = this.salvar.bind(this);
+		this.excluir = this.excluir.bind(this);
+		this.abrirModalCadastro = this.abrirModalCadastro.bind(this);
+		this.abrirModalEdicao = this.abrirModalEdicao.bind(this);
+		this.abrirModalExcluir = this.abrirModalExcluir.bind(this);
+		this.limparFormulario = this.limparFormulario.bind(this);
+		this.fecharModal = this.fecharModal.bind(this);
 
-        this.init();
-    }
+		this.init();
+	}
 
-    init() {
-        const btnNovo = document.getElementById("btnNovo");
-        const btnFecharModal = document.getElementById("btnFecharModal");
-        const btnSalvarFilme = document.getElementById("btnSalvarFilme");
-        const btnExcluirFilme = document.getElementById("btnExcluirFilme");
-        const cancelBtns = document.querySelectorAll(".btn-secondary[data-bs-dismiss='modal']");
+	init() {
+		const btnNovo = document.getElementById("btnNovo");
+		const btnFecharModal = document.getElementById("btnFecharModal");
+		const btnSalvarFilme = document.getElementById("btnSalvarFilme");
+		const btnExcluirFilme = document.getElementById("btnExcluirFilme");
+		const cancelBtns = document.querySelectorAll(
+			".btn-secondary[data-bs-dismiss='modal']",
+		);
 
-        btnNovo.addEventListener("click", this.abrirModalCadastro);
-        btnSalvarFilme.addEventListener("click", this.salvar);
-        btnExcluirFilme.addEventListener("click", () => this.excluir(this.idParaExcluir));
+		btnNovo.addEventListener("click", this.abrirModalCadastro);
+		btnSalvarFilme.addEventListener("click", this.salvar);
+		btnExcluirFilme.addEventListener("click", () =>
+			this.excluir(this.idParaExcluir),
+		);
 
-        btnFecharModal.addEventListener("click", () => {
-            this.limparFormulario();
-            this.fecharModal("idModalFilme");
-        });
+		btnFecharModal.addEventListener("click", () => {
+			this.limparFormulario();
+			this.fecharModal("idModalFilme");
+		});
 
-        cancelBtns.forEach(btn => {
-            btn.addEventListener("click", () => {
-                this.limparFormulario();
-                this.fecharModal(btn.closest(".modal").id);
-            });
-        });
+		cancelBtns.forEach((btn) => {
+			btn.addEventListener("click", () => {
+				this.limparFormulario();
+				this.fecharModal(btn.closest(".modal").id);
+			});
+		});
 
-        const btnBuscar = document.querySelector(".btn-primary[type='button']");
-        const inputBusca = document.querySelector("input[placeholder='Digite o título do filme']");
+		const btnBuscar = document.querySelector(".btn-primary[type='button']");
+		const inputBusca = document.querySelector(
+			"input[placeholder='Digite o título do filme']",
+		);
 
-        if (btnBuscar && inputBusca) {
-            btnBuscar.addEventListener("click", () => this.buscarFilmes(inputBusca.value));
-            inputBusca.addEventListener("keypress", (e) => {
-                if (e.key === "Enter") {
-                    this.buscarFilmes(inputBusca.value);
-                }
-            });
-        }
+		if (btnBuscar && inputBusca) {
+			btnBuscar.addEventListener("click", () =>
+				this.buscarFilmes(inputBusca.value),
+			);
+			inputBusca.addEventListener("keypress", (e) => {
+				if (e.key === "Enter") {
+					this.buscarFilmes(inputBusca.value);
+				}
+			});
+		}
 
-        this.carregarFilmesDoLocalStorage();
-    }
+		this.carregarFilmesDoLocalStorage();
+	}
 
-    buscarFilmes(termo) {
-        if (!termo) {
-            this.atualizarTabela(this.listaFilmes);
-            return;
-        }
+	buscarFilmes(termo) {
+		if (!termo) {
+			this.atualizarTabela(this.listaFilmes);
+			return;
+		}
 
-        const termoLower = termo.toLowerCase();
-        const resultados = this.listaFilmes.filter(filme =>
-            filme.titulo.toLowerCase().includes(termoLower) ||
-            filme.genero.toLowerCase().includes(termoLower)
-        );
+		const termoLower = termo.toLowerCase();
+		const resultados = this.listaFilmes.filter(
+			(filme) =>
+				filme.titulo.toLowerCase().includes(termoLower) ||
+				filme.genero.toLowerCase().includes(termoLower),
+		);
 
-        this.atualizarTabela(resultados);
-    }
+		this.atualizarTabela(resultados);
+	}
 
-    salvar() {
-        const form = document.getElementById("formFilme");
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
+	salvar() {
+		const form = document.getElementById("formFilme");
+		if (!form.checkValidity()) {
+			form.reportValidity();
+			return;
+		}
 
-        const fileInput = document.getElementById("imagem");
-        const file = fileInput.files[0];
+		const fileInput = document.getElementById("imagem");
+		const file = fileInput.files[0];
 
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const base64Image = reader.result; // this is the Base64 string
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				const base64Image = reader.result; // Base64 string
 
-                const filme = this.criarFilmeDoFormulario(base64Image);
-                this.salvarFilme(filme);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            // No new image selected, keep existing or default
-            const filme = this.criarFilmeDoFormulario();
-            this.salvarFilme(filme);
-        }
-    }
-    salvarFilme(filme) {
-        if (this.idEmEdicao) {
-            const index = this.listaFilmes.findIndex(f => f.id === this.idEmEdicao);
-            if (index !== -1) {
-                this.listaFilmes[index] = filme;
-            }
-        } else {
-            this.listaFilmes.push(filme);
-        }
+				const filme = this.criarFilmeDoFormulario(base64Image);
+				this.salvarFilme(filme);
+			};
+			reader.onerror = () => {
+				console.error("Erro ao ler arquivo de imagem");
+				// Save without new image, fallback to existing or default
+				const filme = this.criarFilmeDoFormulario();
+				this.salvarFilme(filme);
+			};
+			reader.readAsDataURL(file);
+		} else {
+			// No new image selected, keep existing or default
+			const filme = this.criarFilmeDoFormulario();
+			this.salvarFilme(filme);
+		}
+	}
 
-        this.salvarNoLocalStorage();
-        this.atualizarTabela(this.listaFilmes);
-        this.limparFormulario();
-        this.fecharModal("idModalFilme");
-    }
+	salvarFilme(filme) {
+		if (this.idEmEdicao) {
+			const index = this.listaFilmes.findIndex((f) => f.id === this.idEmEdicao);
+			if (index !== -1) {
+				this.listaFilmes[index] = filme;
+			}
+		} else {
+			this.listaFilmes.push(filme);
+		}
 
-    criarFilmeDoFormulario(base64Image) {
-        return new Filme(
-            this.idEmEdicao || Date.now(),
-            document.getElementById("titulo").value.trim(),
-            document.getElementById("descricao").value.trim(),
-            document.getElementById("genero").value.trim(),
-            document.getElementById("classificacao").value,
-            parseInt(document.getElementById("duracao").value),
-            document.getElementById("dataEstreia").value,
-            base64Image || this.imagemAtual || "../img/placeholder-image.jpg"
-        );
-    }
+		this.salvarNoLocalStorage();
+		this.atualizarTabela(this.listaFilmes);
+		this.limparFormulario();
+		this.fecharModal("idModalFilme");
+	}
 
-    salvarNoLocalStorage() {
-        localStorage.setItem(this.LOCAL_STORAGE_KEY, JSON.stringify(this.listaFilmes));
-    }
+	criarFilmeDoFormulario(base64Image) {
+		return new Filme(
+			this.idEmEdicao || Date.now(),
+			document.getElementById("titulo").value.trim(),
+			document.getElementById("descricao").value.trim(),
+			document.getElementById("genero").value.trim(),
+			document.getElementById("classificacao").value,
+			parseInt(document.getElementById("duracao").value, 10),
+			document.getElementById("dataEstreia").value,
+			base64Image || this.imagemAtual || "./img/placeholder-image.jpg",
+		);
+	}
 
-    carregarFilmesDoLocalStorage() {
-        const filmesSalvos = localStorage.getItem(this.LOCAL_STORAGE_KEY);
+	salvarNoLocalStorage() {
+		localStorage.setItem(
+			this.LOCAL_STORAGE_KEY,
+			JSON.stringify(this.listaFilmes),
+		);
+	}
 
-        if (filmesSalvos) {
-            try {
-                const filmesJSON = JSON.parse(filmesSalvos);
-                this.listaFilmes = filmesJSON.map(json => Filme.fromJSON(json));
-                this.atualizarTabela(this.listaFilmes);
-            } catch (error) {
-                console.error("Erro ao carregar filmes do localStorage:", error);
-                this.listaFilmes = [];
-            }
-        }
-    }
+	carregarFilmesDoLocalStorage() {
+		const filmesSalvos = localStorage.getItem(this.LOCAL_STORAGE_KEY);
 
-    atualizarTabela(filmes = this.listaFilmes) {
-        const tbody = document.getElementById("tabelaFilmes") || document.querySelector("tbody");
-        if (!tbody) return;
+		if (filmesSalvos) {
+			try {
+				const filmesJSON = JSON.parse(filmesSalvos);
+				this.listaFilmes = filmesJSON.map((json) => Filme.fromJSON(json));
+				this.atualizarTabela(this.listaFilmes);
+			} catch (error) {
+				console.error("Erro ao carregar filmes do localStorage:", error);
+				this.listaFilmes = [];
+			}
+		}
+	}
 
-        tbody.innerHTML = "";
+	atualizarTabela(filmes = this.listaFilmes) {
+		const tbody =
+			document.getElementById("tabelaFilmes") ||
+			document.querySelector("tbody");
+		if (!tbody) return;
 
-        if (filmes.length === 0) {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `<td colspan="7" class="text-center">Nenhum filme cadastrado</td>`;
-            tbody.appendChild(tr);
-            return;
-        }
+		tbody.innerHTML = "";
 
-        filmes.forEach(filme => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
+		if (filmes.length === 0) {
+			const tr = document.createElement("tr");
+			tr.innerHTML = `<td colspan="7" class="text-center">Nenhum filme cadastrado</td>`;
+			tbody.appendChild(tr);
+			return;
+		}
+
+		filmes.forEach((filme) => {
+			const tr = document.createElement("tr");
+			tr.innerHTML = `
         <td>${filme.id}</td>
         <td><strong>${filme.titulo}</strong></td>
         <td>${filme.genero}</td>
@@ -175,108 +197,114 @@ export class FilmeController {
           </button>
         </td>
       `;
-            tbody.appendChild(tr);
+			tbody.appendChild(tr);
 
-            tr.querySelector(".btn-editar").addEventListener("click", () => this.abrirModalEdicao(filme));
-            tr.querySelector(".btn-excluir").addEventListener("click", () => this.abrirModalExcluir(filme.id));
-        });
-    }
+			tr.querySelector(".btn-editar").addEventListener("click", () =>
+				this.abrirModalEdicao(filme),
+			);
+			tr.querySelector(".btn-excluir").addEventListener("click", () =>
+				this.abrirModalExcluir(filme.id),
+			);
+		});
+	}
 
-    excluir(id) {
-        if (!id) return;
+	excluir(id) {
+		if (!id) return;
 
-        this.listaFilmes = this.listaFilmes.filter(filme => filme.id !== id);
-        this.salvarNoLocalStorage();
-        this.atualizarTabela(this.listaFilmes);
-        this.idParaExcluir = null;
-        this.fecharModal("modalExcluirFilme")
-    }
+		this.listaFilmes = this.listaFilmes.filter((filme) => filme.id !== id);
+		this.salvarNoLocalStorage();
+		this.atualizarTabela(this.listaFilmes);
+		this.idParaExcluir = null;
+		this.fecharModal("modalExcluirFilme");
+	}
 
-    abrirModalCadastro() {
-        this.limparFormulario();
+	abrirModalCadastro() {
+		this.limparFormulario();
+		this.idEmEdicao = null;
+		this.imagemAtual = null; // Clear previous image
+		document.getElementById("idModalFilmeTitulo").textContent =
+			"Cadastrar Novo Filme";
+		this.abrirModal("idModalFilme");
+	}
 
-        this.idEmEdicao = null;
+	abrirModalEdicao(filme) {
+		if (!filme) return;
 
-        document.getElementById("idModalFilmeTitulo").textContent = "Cadastrar Novo Filme";
+		this.idEmEdicao = filme.id;
+		this.imagemAtual = filme.imagem; // Store current image base64 or URL
 
-        this.abrirModal("idModalFilme");
-    }
+		document.getElementById("titulo").value = filme.titulo;
+		document.getElementById("descricao").value = filme.descricao || "";
+		document.getElementById("genero").value = filme.genero;
+		document.getElementById("classificacao").value = filme.classificacao;
+		document.getElementById("duracao").value = filme.duracao;
+		document.getElementById("dataEstreia").value = filme.dataEstreia;
 
-    abrirModalEdicao(filme) {
-        if (!filme) return;
+		// Clear file input so user can upload new image if desired
+		document.getElementById("imagem").value = "";
 
-        this.idEmEdicao = filme.id;
-        this.imagemAtual = filme.imagem; // store current image base64 or URL
+		document.getElementById("idModalFilmeTitulo").textContent = "Editar Filme";
 
-        document.getElementById("titulo").value = filme.titulo;
-        document.getElementById("descricao").value = filme.descricao || "";
-        document.getElementById("genero").value = filme.genero;
-        document.getElementById("classificacao").value = filme.classificacao;
-        document.getElementById("duracao").value = filme.duracao;
-        document.getElementById("dataEstreia").value = filme.dataEstreia;
+		this.abrirModal("idModalFilme");
+	}
 
-        // Clear file input so user can upload new image if desired
-        document.getElementById("imagem").value = "";
+	abrirModalExcluir(id) {
+		if (!id) return;
 
-        document.getElementById("idModalFilmeTitulo").textContent = "Editar Filme";
+		this.idParaExcluir = id;
 
-        this.abrirModal("idModalFilme");
-    }
+		const filme = this.listaFilmes.find((f) => f.id === id);
 
-    abrirModalExcluir(id) {
-        if (!id) return;
+		if (filme) {
+			const msgConfirmacao = document.querySelector(
+				"#modalExcluirFilme .modal-body h5",
+			);
+			if (msgConfirmacao) {
+				msgConfirmacao.textContent = `Deseja realmente excluir o filme "${filme.titulo}"?`;
+			}
+		}
 
-        this.idParaExcluir = id;
+		this.abrirModal("modalExcluirFilme");
+	}
 
-        const filme = this.listaFilmes.find(f => f.id === id);
+	limparFormulario() {
+		const form = document.getElementById("formFilme");
+		if (form) {
+			form.reset();
+			this.idEmEdicao = null;
+			this.imagemAtual = null;
+		}
+	}
 
-        if (filme) {
-            const msgConfirmacao = document.querySelector("#modalExcluirFilme .modal-body h5");
-            if (msgConfirmacao) {
-                msgConfirmacao.textContent = `Deseja realmente excluir o filme "${filme.titulo}"?`;
-            }
-        }
+	abrirModal(modalId) {
+		const modalElement = document.getElementById(modalId);
+		if (!modalElement) return;
 
-        this.abrirModal("modalExcluirFilme");
-    }
+		const modal = new bootstrap.Modal(modalElement);
+		modal.show();
+	}
 
-    limparFormulario() {
-        const form = document.getElementById("formFilme");
-        if (form) {
-            form.reset();
-            this.idEmEdicao = null;
-        }
-    }
+	fecharModal(modalId) {
+		const modalElement = document.getElementById(modalId);
+		if (!modalElement) return;
 
-    abrirModal(modalId) {
-        const modalElement = document.getElementById(modalId);
-        if (!modalElement) return;
+		const modalInstance = bootstrap.Modal.getInstance(modalElement);
+		if (modalInstance) {
+			modalInstance.hide();
+		}
+	}
 
-        const modal = new bootstrap.Modal(modalElement);
-        modal.show();
-    }
-
-    fecharModal(modalId) {
-        const modalElement = document.getElementById(modalId);
-        if (!modalElement) return;
-
-        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-        if (modalInstance) {
-            modalInstance.hide();
-        }
-    }
-
-    formatarData(data) {
-        try {
-            const d = new Date(data);
-            return d.toLocaleDateString("pt-BR");
-        } catch (e) {
-            return data;
-        }
-    }
+	formatarData(data) {
+		try {
+			const d = new Date(data);
+			return d.toLocaleDateString("pt-BR");
+		} catch (e) {
+			return data;
+		}
+	}
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const filmeController = new FilmeController();
-    window.filmeController = filmeController;
+	const filmeController = new FilmeController();
+	window.filmeController = filmeController;
 });
