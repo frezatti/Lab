@@ -22,10 +22,37 @@ export class IngressoController {
 		if (btnConfirmarVenda) {
 			btnConfirmarVenda.addEventListener("click", this.confirmarVenda);
 		}
+
+		const params = new URLSearchParams(window.location.search);
+		const sessaoId = params.get("sessaoId");
+		if (sessaoId) {
+			// Open the modal
+			const modalEl = document.getElementById("modalVendaIngresso");
+			if (modalEl) {
+				const modal = new bootstrap.Modal(modalEl);
+				modal.show();
+			}
+		}
 	}
 
 	carregarDados() {
 		const filmesSalvos = localStorage.getItem("filmes");
+
+		const ingressosSalvos = localStorage.getItem(this.LOCAL_STORAGE_KEY);
+		if (ingressosSalvos) {
+			try {
+				const ingressosJSON = JSON.parse(ingressosSalvos);
+				this.listaIngressos = ingressosJSON.map((json) =>
+					Ingresso.fromJSON(json),
+				);
+			} catch (error) {
+				console.error("Erro ao carregar ingressos do localStorage:", error);
+				this.listaIngressos = [];
+			}
+		} else {
+			this.listaIngressos = [];
+		}
+
 		if (filmesSalvos) {
 			try {
 				const filmesJSON = JSON.parse(filmesSalvos);
@@ -66,6 +93,13 @@ export class IngressoController {
 
 		this.preencherSelectSessao();
 		this.atualizarTabela();
+
+		const params = new URLSearchParams(window.location.search);
+		const sessaoId = params.get("sessaoId");
+		if (sessaoId) {
+			const selectSessao = document.getElementById("sessao");
+			if (selectSessao) selectSessao.value = sessaoId;
+		}
 	}
 
 	preencherSelectSessao() {
@@ -108,6 +142,10 @@ export class IngressoController {
 		this.salvarNoLocalStorage();
 		this.atualizarTabela();
 		form.reset();
+		const modal = bootstrap.Modal.getInstance(
+			document.getElementById("modalVendaIngresso"),
+		);
+		if (modal) modal.hide();
 	}
 
 	criarIngressoDoFormulario() {
@@ -136,29 +174,36 @@ export class IngressoController {
 
 		if (this.listaIngressos.length === 0) {
 			const tr = document.createElement("tr");
-			tr.innerHTML = `<td colspan="8" class="text-center">Nenhum ingresso vendido</td>`;
+			tr.innerHTML = `<td colspan="9" class="text-center">Nenhum ingresso vendido</td>`;
 			tbody.appendChild(tr);
 			return;
 		}
 
 		this.listaIngressos.forEach((ingresso) => {
 			// Find the session for this ingresso
-			const sessao = this.listaSessoes.find((s) => s.id === ingresso.sessaoId);
+			const sessao = this.listaSessoes.find(
+				(s) => String(s.id) === String(ingresso.sessaoId),
+			);
+			// Find the movie for the session
+			let filmeTitulo = "Filme não encontrado";
+			if (sessao && this.listaFilmes) {
+				const filme = this.listaFilmes.find(
+					(f) => String(f.id) === String(sessao.filmeId),
+				);
+				if (filme) {
+					filmeTitulo = filme.titulo;
+				}
+			}
 
-			// Find the filme and sala for the session
-			const filme = sessao
-				? this.listaFilmes.find((f) => f.id === sessao.filmeId)
-				: null;
-			const sala = sessao
-				? this.listaSalas.find((s) => s.id === sessao.salaId)
-				: null;
+			const sessaoDescricao = sessao
+				? this.formatarData(sessao.dataHora)
+				: "Sessão não encontrada";
 
 			const tr = document.createElement("tr");
 			tr.innerHTML = `
       <td>${ingresso.id}</td>
-      <td>${sessao ? sessao.id : "Sessão não encontrada"}</td>
-      <td>${filme ? filme.titulo : "Filme não encontrado"}</td>
-      <td>${sala ? sala.nome : "Sala não encontrada"}</td>
+      <td>${filmeTitulo}</td>
+      <td>${sessaoDescricao}</td>
       <td>${ingresso.nomeCliente}</td>
       <td>${ingresso.cpf}</td>
       <td>${ingresso.assento}</td>

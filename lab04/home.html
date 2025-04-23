@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/bootstrap.min.css" />
-    <title>Cinema - Home</title>
+    <title>Cinema - Sessões</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -21,7 +21,6 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
@@ -54,14 +53,10 @@
     </nav>
     <main class="container">
       <header class="my-4">
-        <h2>Filmes em exibição</h2>
+        <h2>Sessões Disponíveis</h2>
       </header>
-
-      <div class="row g-4">
-        <div class="col-12 col-sm-6 col-lg-4"></div>
-      </div>
+      <div class="row g-4" id="listaFilmesSessoes"></div>
     </main>
-
     <script src="./js/bootstrap.bundle.min.js"></script>
     <script type="module" src="./controller/homeController.js"></script>
   </body>
