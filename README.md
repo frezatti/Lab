@@ -144,15 +144,6 @@ _(Add screenshots of your app here if you wish!)_
 
 ---
 
-## 📄 License
-
-MIT License (or your preferred license)
+**Enjoy your cinema management app!**
 
 ---
-
-**Enjoy your cinema management app!**  
-If you have questions or want to contribute, feel free to open an issue or PR.
-
----
-
-Let me know if you want to add anything else!
