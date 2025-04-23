@@ -101,7 +101,6 @@ export class FilmeController {
 			};
 			reader.onerror = () => {
 				console.error("Erro ao ler arquivo de imagem");
-				// Save without new image, fallback to existing or default
 				const filme = this.criarFilmeDoFormulario();
 				this.salvarFilme(filme);
 			};

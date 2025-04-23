@@ -1,28 +1,210 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./css/bootstrap.min.css">
-  <title>Document</title>
-</head>
-<body >
-  <div class="container-fluid bg-dark">
-    <ul class="nav justify-content-end">
-      <li class="nav-item"> <a class="nav-link"  href="./home.html">Home</a></li>
-      <li class="nav-item"> <a class="nav-link"  href="./salas.html">Salas</a></li>
-      <li class="nav-item"> <a class="nav-link"  href="./filmes.html">Filmes</a></li>
-      <li class="nav-item"> <a class="nav-link"  href="./sessoes.html">Sessões</a></li>
-      <li class="nav-item"> <a class="nav-link"  href="./ingressos.html">Ingressos</a></li>
-      <li class="nav-item"> <a class="nav-link disabled"  href="./login.html">Login</a></li>
-    </ul>
-  </div>
-  <div class="container" >
-    <br>
-    <h3>Salas</h3>
-    <br>
-  </div>
-  
-  <script src="./js/bootstrap.bundle.min.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./css/bootstrap.min.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <title>Cinema - Salas</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand">Cinema</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="./home.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./salas.html">Salas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./filmes.html">Filmes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./sessoes.html">Sessões</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./ingressos.html">Ingressos</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link disabled"
+                href="./login.html"
+                tabindex="-1"
+                aria-disabled="true"
+                >Login</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <header class="d-flex justify-content-between align-items-center my-4">
+        <h2>Salas</h2>
+        <button id="btnNovo" class="btn btn-primary">
+          <i class="bi bi-plus-circle"></i> Nova Sala
+        </button>
+      </header>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="input-group w-50">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Digite o nome da sala"
+            aria-label="Buscar sala"
+          />
+          <button class="btn btn-primary" type="button">Buscar</button>
+        </div>
+      </div>
+
+      <table class="table table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Capacidade</th>
+            <th>Tipo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaSalas">
+          <!-- Salas serão inseridas aqui -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal Cadastro / Edição -->
+    <div
+      class="modal fade"
+      id="idModalSala"
+      tabindex="-1"
+      aria-labelledby="idModalSalaTitulo"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <form id="formSala" class="modal-content" novalidate>
+          <div class="modal-header">
+            <h5 class="modal-title" id="idModalSalaTitulo">
+              Cadastrar Nova Sala
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="nome" class="form-label">Nome</label>
+              <input
+                type="text"
+                class="form-control"
+                id="nome"
+                required
+                minlength="2"
+                maxlength="50"
+              />
+              <div class="invalid-feedback">Informe um nome válido.</div>
+            </div>
+            <div class="mb-3">
+              <label for="capacidade" class="form-label">Capacidade</label>
+              <input
+                type="number"
+                class="form-control"
+                id="capacidade"
+                required
+                min="1"
+                max="500"
+              />
+              <div class="invalid-feedback">Informe uma capacidade válida.</div>
+            </div>
+            <div class="mb-3">
+              <label for="tipo" class="form-label">Tipo</label>
+              <select class="form-select" id="tipo" required>
+                <option value="">Selecione o tipo</option>
+                <option value="2D">2D</option>
+                <option value="3D">3D</option>
+                <option value="IMAX">IMAX</option>
+              </select>
+              <div class="invalid-feedback">Selecione um tipo.</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              id="btnFecharModal"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" id="btnSalvarSala">
+              Salvar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Exclusão -->
+    <div
+      class="modal fade"
+      id="modalExcluirSala"
+      tabindex="-1"
+      aria-labelledby="modalExcluirSalaLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalExcluirSalaLabel">Excluir Sala</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h5>Deseja realmente excluir a sala?</h5>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-danger" id="btnExcluirSala">
+              Excluir
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./controller/salaController.js"></script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
